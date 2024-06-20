@@ -7,7 +7,7 @@ const CMD_UNIX = 'ps -A -o %cpu,%mem,comm | sort -nr | head -n 1';
 const CMD_WIN = `powershell "Get-Process | Sort-Object CPU -Descending | Select-Object -Property Name, CPU, WorkingSet -First 1 | ForEach-Object { $_.Name + ' ' + $_.CPU + ' ' + $_.WorkingSet }"`;
 
 const CLI_RATE = 10;
-const LOG_RATE = 1 / 5
+const LOG_RATE = 1 / 60;
 
 const cli_formatter = (line) => `${line}`
 const log_formatter = (line, date) => `${date} : ${line}\n`;
