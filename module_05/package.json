@@ -1,0 +1,27 @@
+{
+  "name": "module_05",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "./node_modules/.bin/pm2 start src/index.js --name ngmp-network-app",
+    "stop": "./node_modules/.bin/pm2 stop ngmp-network-app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MilosSukara/ngmp_02_24.git"
+  },
+  "author": "Milos Sukara",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MilosSukara/ngmp_02_24/issues"
+  },
+  "homepage": "https://github.com/MilosSukara/ngmp_02_24#readme",
+  "description": "",
+  "devDependencies": {
+    "pm2": "^5.4.1"
+  },
+  "dependencies": {
+    "uuid": "^10.0.0"
+  }
+}
