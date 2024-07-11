@@ -4,18 +4,24 @@ import url from 'url';
 import { notFound as nf, respond } from "./http.js"
 
 const MAX_AGE = 3600;
-const notFound = (res) => nf(res, "User not found!");
+const notFound = (res, id) => nf(res, `User with ${id} doesn't exist`);
 
 export function getUsers(req, res) {
   const users = db.users.all();
   res.setHeader("Cache-Control", `public, max-age=${MAX_AGE}`);
   respond(res, {
-    users: users.map(user => ({
-      ...user,
+    data: users.map(user => ({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
       links: {
+        self: `/api/users/${user.id}`,
         hobbies: `/api/users/${user.id}/hobbies`
-      }
+      },
     })),
+    error: null,
   });
 }
 
@@ -24,17 +30,23 @@ export function getUser(req, res) {
   const id = reqURL.replace('/api/users/', '');
   const user = db.users.get(id);
   if (user == undefined) {
-    notFound(res);
+    notFound(res, id);
     return;
   }
   res.setHeader("Cache-Control", `private, max-age=${MAX_AGE}`);
   respond(res, {
-    user: {
-      ...user,
+    data: {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
       links: {
+        self: `/api/users/${user.id}`,
         hobbies: `/api/users/${user.id}/hobbies`
-      }
-    }
+      },
+    },
+    error: null,
   });
 }
 
@@ -42,7 +54,21 @@ export function getUser(req, res) {
 export async function createUser(req, res) {
   const body = await parseRequestBody(req);
   const user = db.users.create({ name: body?.name, email: body?.email, hobbies: body?.hobbies ?? [] });
-  respond(res, { user }, 201);
+  const data = {
+    data: {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      links: {
+        self: `/api/users/${user.id}`,
+        hobbies: `/api/users/${user.id}/hobbies`
+      },
+    },
+    error: null,
+  }
+  respond(res, data, 201);
 }
 
 export function deleteUser(req, res) {
@@ -50,10 +76,15 @@ export function deleteUser(req, res) {
   const id = reqURL.replace('/api/users/', '');
   const isDeleted = db.users.delete(id);
   if (!isDeleted) {
-    notFound(res);
+    notFound(res, id);
     return;
   }
-  respond(res, undefined, 204);
+  respond(res, {
+    data: {
+      success: true,
+    },
+    error: null
+  }, 200);
 }
 
 export function getHobbies(req, res) {
@@ -61,15 +92,19 @@ export function getHobbies(req, res) {
   const id = reqURL.replace('/api/users/', '').replace('/hobbies', '');
   const user = db.users.get(id);
   if (user == undefined) {
-    notFound(res);
+    notFound(res, id);
     return;
   }
   res.setHeader("Cache-Control", `private, max-age=${MAX_AGE}`);
   respond(res, {
-    hobbies: user?.hobbies,
-    links: {
-      user: `/api/users/${user.id}`
-    }
+    data: {
+      hobbies: user?.hobbies,
+      links: {
+        self: `/api/users/${user.id}/hobbies`,
+        user: `/api/users/${user.id}`
+      }
+    },
+    error: null
   });
 }
 
@@ -78,7 +113,7 @@ export async function patchHobbies(req, res) {
   const id = reqURL.replace('/api/users/', '').replace('/hobbies', '');
   const user = db.users.get(id);
   if (user == undefined) {
-    notFound(res);
+    notFound(res, id);
     return;
   }
   const oldHobbies = user?.hobbies ?? [];
@@ -88,5 +123,18 @@ export async function patchHobbies(req, res) {
     ...user,
     hobbies
   });
-  respond(res, { user: updatedUser });
+  respond(res, {
+    data: {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      links: {
+        self: `/api/users/${user.id}`,
+        hobbies: `/api/users/${user.id}/hobbies`
+      },
+    },
+    error: null
+  });
 }
