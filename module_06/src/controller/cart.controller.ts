@@ -1,6 +1,11 @@
 import { Request, RequestHandler, Response } from "express";
 import { cartService, CartServiceErrorResponses } from "../service/cart.service";
-import { CartResponse, EmptySuccessResponse, ErrorResponse } from "./http.schema";
+import { CartResponse, EmptySuccessResponse, ErrorResponse, PublicCart } from "./http.schema";
+import { Cart } from "../service/entity.schema";
+
+
+export const getPublicCart = ({ id, items }: PublicCart) => ({ id, items });
+
 
 export const cartController = {
 
@@ -9,7 +14,7 @@ export const cartController = {
     const cart = cartService.getCart(userId);
     res.send({
       data: {
-        cart,
+        cart: getPublicCart(cart),
         total: cartService.getTotal(cart.items)
       },
       error: null,
@@ -51,7 +56,7 @@ export const cartController = {
     if (error === null) {
       res.send({
         data: {
-          cart: cart,
+          cart: getPublicCart(cart),
           total: cartService.getTotal(cart.items)
         },
         error: null

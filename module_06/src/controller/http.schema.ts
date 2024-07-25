@@ -1,8 +1,10 @@
 import { Cart, Order, Product } from "../service/entity.schema"
 
+export type PublicCart = Pick<Cart, "id" | "items">
+
 export interface CartResponse {
   data: {
-    cart: Cart,
+    cart: PublicCart,
     total: number,
   }
   error: ErrorResponseBody | null
