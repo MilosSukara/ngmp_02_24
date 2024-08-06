@@ -1,6 +1,6 @@
-import { Product } from "../service/entity.schema";
-import { DB } from "./db"
+import { ProductEntity } from "../schema/entity.schema";
+import { Product } from "../schema/db.schema";
 export const productRepository = {
-  all: (): Product[] => DB.products,
-  get: (id: string): Product | null => DB.products.find(pr => pr.id === id) ?? null,
+  all: async (): Promise<ProductEntity[]> => await Product.find(),
+  get: async (id: string): Promise<ProductEntity | null> => await Product.findById(id) ?? null,
 }

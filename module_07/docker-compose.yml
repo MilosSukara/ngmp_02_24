@@ -1,0 +1,67 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - ./src:/home/node/app/src
+      - ./nodemon.json:/home/node/app/nodemon.json
+    container_name: app
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    command: npm run dev
+    networks:
+      - ngmp_network
+
+  nosql:
+    restart: always
+    image: mongo:latest
+    hostname: nosql
+    container_name: nosql
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - '27017:27017'
+    networks:
+      - ngmp_network
+    volumes:
+      - ./mongodb/initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - nosql-data:/data/db/
+      - nosql-log:/var/log/mongodb/
+
+  # mongo_express:
+  #   restart: always
+  #   image: mongo-express:latest
+  #   container_name: mongo_express
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+  #     ME_CONFIG_MONGODB_PORT: 27017
+  #     ME_CONFIG_MONGODB_SERVER: 'ngmp'
+  #     # ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME}
+  #     # ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
+  #   ports:
+  #     - "3031:8081"
+  #   networks:
+  #     - ngmp_network
+
+volumes:
+  nosql-data:
+    driver: local
+    name: mongo-data
+  nosql-log:
+    driver: local
+    name: mongo-log
+
+networks:
+  ngmp_network:
+    driver: bridge
