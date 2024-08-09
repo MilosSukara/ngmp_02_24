@@ -3,6 +3,17 @@ import { cartController } from './controller/cart.controller'
 import { productController } from './controller/product.controller';
 import { updateCartValidatior } from './controller/cart.validatior'
 import { errorHandler, setJSONResponseHeader, userAuthorizationMiddleware } from './controller/middleware';
+import mongoose from 'mongoose';
+
+const { MONGO_USER, MONGO_PASS, MONGO_URL, MONGO_PORT, MONGO_DB } = process.env;
+
+const uri: string = `mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_URL}:${MONGO_PORT}/${MONGO_DB}`;
+
+mongoose.connect(uri).then(() => {
+  console.log("Succesfully connected to MongoDB");
+}).catch((error: Error) => {
+  console.log(`Error connecting to MongoDB: ${error.message}`);
+});
 
 const app = express();
 const port = 3000;

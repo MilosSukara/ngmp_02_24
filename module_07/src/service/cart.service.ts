@@ -1,7 +1,8 @@
 import { cartRepository } from "../repository/cart.repository";
 import { orderRepository } from "../repository/order.repository";
 import { productRepository } from "../repository/product.repository";
-import { Cart, CartItem, Order, Product } from "./entity.schema";
+import { ICart } from "../schema/db.schema";
+import { CartEntity, CartItemEntity, OrderEntity, ProductEntity } from "../schema/entity.schema";
 
 export enum CartServiceErrorResponses {
   CartNotFound = "cart_not_found",
@@ -11,7 +12,7 @@ export enum CartServiceErrorResponses {
 }
 
 type SuccesfullUpdate = {
-  cart: Cart,
+  cart: CartEntity,
   error: null
 }
 type FailedUpdate = {
@@ -26,32 +27,33 @@ type FailedCheckout = {
 
 
 export const cartService = {
-  getCart: (userId: string) => {
+  getCart: async (userId: string) => {
     if (userId == '') {
       throw new Error("Invalid user id");
     }
-    return cartRepository.getByUserId(userId) ?? cartRepository.create(userId);
+    return await cartRepository.getByUserId(userId) ?? await cartRepository.create(userId);
   },
 
-  updateCart: (userId: string, payload: { productId: string, count: number }): SuccesfullUpdate | FailedUpdate => {
-    const cart = cartRepository.getByUserId(userId) ?? null;
+  updateCart: async (userId: string, payload: { productId: string, count: number }): Promise<SuccesfullUpdate | FailedUpdate> => {
+
+    const cart = (await cartRepository.getByUserId(userId))?.toObject<CartEntity>() ?? null;
     if (cart === null) {
       return { cart: null, error: CartServiceErrorResponses.CartNotFound };
     }
-
     const productItem = cart.items.find(prod => prod.product.id === payload.productId) ?? null;
+
     if (productItem === null) {
       if (payload.count === 0) {
         return { cart: null, error: CartServiceErrorResponses.DroppingNonExistingProduct };
       }
 
-      const newProduct = productRepository.get(payload.productId);
+      const newProduct = await productRepository.get(payload.productId);
 
       if (newProduct === null) {
         return { cart: null, error: CartServiceErrorResponses.ProductNotFound };;
       }
 
-      const updatedCart = addNewProduct(cart, newProduct, payload.count);
+      const updatedCart = await addNewProduct(cart, newProduct, payload.count);
 
       if (updatedCart === null) {
         return { cart: null, error: CartServiceErrorResponses.CartNotFound };
@@ -60,7 +62,7 @@ export const cartService = {
     }
 
     if (payload.count === 0) {
-      const updatedCart = dropProduct(cart, payload.productId);
+      const updatedCart = await dropProduct(cart, payload.productId);
       if (updatedCart === null) {
         return { cart: null, error: CartServiceErrorResponses.CartNotFound };
       }
@@ -70,7 +72,7 @@ export const cartService = {
       };
     }
 
-    const updatedCart = updateProductCount(cart, payload.productId, payload.count);
+    const updatedCart = await updateProductCount(cart, payload.productId, payload.count);
     if (updatedCart === null) {
       return { cart: null, error: CartServiceErrorResponses.CartNotFound };
     }
@@ -81,31 +83,28 @@ export const cartService = {
     };
   },
 
-  emptyCart: (userId: string): Cart | null => {
-    const cart = cartRepository.getByUserId(userId) ?? null;
+  emptyCart: async (userId: string): Promise<CartEntity | null> => {
+    const cart = await cartRepository.getByUserId(userId) ?? null;
     if (cart === null) {
       return null;
     }
-    return cartRepository.update(cart.id, {
-      ...cart,
-      items: []
-    });
+    return await cartRepository.updateItems(cart.id, []);
   },
 
-  checkout(userId: string): { order: Order, error: null } | FailedCheckout {
-    const cart = cartRepository.getByUserId(userId);
+  async checkout(userId: string): Promise<{ order: OrderEntity, error: null } | FailedCheckout> {
+    const cart = await cartRepository.getByUserId(userId);
     if (cart == null) {
       return { order: null, error: CartServiceErrorResponses.CartNotFound }
     }
     if (cart.items.length === 0) {
       return { order: null, error: CartServiceErrorResponses.CartIsEmpty }
     }
-
-    const order = orderRepository.create({
+    const cartObject = cart.toObject();
+    const order = await orderRepository.create({
       userId: userId,
-      cartId: cart.id,
-      items: structuredClone(cart.items),
-      total: this.getTotal(cart.items)
+      cartId: cartObject.id,
+      items: structuredClone(cartObject.items),
+      total: this.getTotal(cartObject.items)
     })
 
     return {
@@ -113,35 +112,28 @@ export const cartService = {
       error: null
     }
   },
-  getTotal: (items: CartItem[]): number => items.reduce((acc: number, item: CartItem) => acc += item.product.price * item.count, 0)
+  getTotal: (items: CartItemEntity[]): number =>
+    items.reduce((acc: number, item: CartItemEntity) => acc += item.product.price * item.count, 0)
 }
 
-const addNewProduct = (cart: Cart, newProduct: Product, count: number): Cart | null => cartRepository.update(cart.id, {
-  ...cart,
-  items: [
+const addNewProduct = async (cart: any, newProduct: ProductEntity, count: number): Promise<CartEntity | null> =>
+  await cartRepository.updateItems(cart.id, [
     ...cart.items || [],
     {
       product: newProduct,
       count: count
     }
-  ]
-});
+  ]);
 
-const dropProduct = (cart: Cart, productId: string): Cart | null => cartRepository.update(cart.id, {
-  ...cart,
-  items: cart.items.filter(item => item.product.id !== productId)
-});
+const dropProduct = async (cart: CartEntity, productId: string): Promise<CartEntity | null> => await cartRepository.updateItems(cart.id, cart.items.filter(item => item.product.id !== productId));
 
-const updateProductCount = (cart: Cart, productId: string, count: number): Cart | null => cartRepository.update(cart.id, {
-  ...cart,
-  items: cart.items.map(item => {
+const updateProductCount = async (cart: CartEntity, productId: string, count: number): Promise<CartEntity | null> =>
+  await cartRepository.updateItems(cart.id, cart.items.map(item => {
     if (item.product.id === productId) {
       return {
         ...item,
         count: count,
       };
-
     }
     return item;
-  })
-});
+  }));

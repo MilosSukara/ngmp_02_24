@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { userRepository } from "../repository/user.repository";
-import { ErrorResponse } from "./http.schema";
+import { ErrorResponse } from "../schema/http.schema";
 
-export const userAuthorizationMiddleware = (req: Request<any, any, { "x-user-id": string }>, res: Response<ErrorResponse>, next: NextFunction) => {
+export const userAuthorizationMiddleware = async (req: Request<any, any, { "x-user-id": string }>, res: Response<ErrorResponse>, next: NextFunction) => {
   const id = req.get('x-user-id') ?? '';
   if (id === '') {
     res.statusCode = 403;
@@ -16,10 +16,26 @@ export const userAuthorizationMiddleware = (req: Request<any, any, { "x-user-id"
     return;
   }
   if (id === 'admin') {
+    const admin = await userRepository.findByName('Admin');
+    if (admin === null) {
+      res.statusCode = 403;
+      res.send({
+        data: null,
+        error: {
+          message: "You must be authorized user"
+        }
+      })
+      res.end();
+      return;
+    }
+    req.headers = {
+      ...req.headers,
+      'x-user-id': admin.id,
+    }
     next();
     return;
   }
-  const user = userRepository.get(id);
+  const user = await userRepository.get(id);
   if (user != null) {
     next();
     return;
