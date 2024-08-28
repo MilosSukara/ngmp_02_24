@@ -1,7 +1,6 @@
 import { Request, RequestHandler, Response } from "express";
-import { cartService, CartServiceErrorResponses } from "../service/cart.service";
-import { CartResponse, EmptySuccessResponse, ErrorResponse, PublicCart } from "./http.schema";
-import { Cart } from "../service/entity.schema";
+import { cartService, CartServiceErrorResponses } from "../service/cart.service.js";
+import { CartResponse, EmptySuccessResponse, ErrorResponse, PublicCart } from "./http.schema.js";
 
 
 export const getPublicCart = ({ id, items }: PublicCart) => ({ id, items });

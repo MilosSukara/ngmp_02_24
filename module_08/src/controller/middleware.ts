@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { userRepository } from "../repository/user.repository";
-import { ErrorResponse } from "./http.schema";
+import { userRepository } from "../repository/user.repository.js";
+import { ErrorResponse } from "./http.schema.js";
 
 export const userAuthorizationMiddleware = (req: Request<any, any, { "x-user-id": string }>, res: Response<ErrorResponse>, next: NextFunction) => {
   const id = req.get('x-user-id') ?? '';

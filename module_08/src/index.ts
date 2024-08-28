@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { cartController } from './controller/cart.controller'
-import { productController } from './controller/product.controller';
-import { updateCartValidatior } from './controller/cart.validatior'
-import { errorHandler, setJSONResponseHeader, userAuthorizationMiddleware } from './controller/middleware';
+import { cartController } from './controller/cart.controller.js'
+import { productController } from './controller/product.controller.js';
+import { updateCartValidatior } from './controller/cart.validatior.js'
+import { errorHandler, setJSONResponseHeader, userAuthorizationMiddleware } from './controller/middleware.js';
 
 const app = express();
 const port = 3000;

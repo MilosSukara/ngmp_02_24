@@ -1,4 +1,4 @@
-import { Cart, Order, Product, User } from "../service/entity.schema"
+import { Cart, Order, Product, User } from "../service/entity.schema.js"
 
 export const DB = {
   products: [

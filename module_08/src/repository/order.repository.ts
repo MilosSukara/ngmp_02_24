@@ -1,5 +1,5 @@
-import { Cart, Order } from "../service/entity.schema";
-import { DB } from "./db"
+import { Cart, Order } from "../service/entity.schema.js";
+import { DB } from "./db.js"
 import { v4 as uuid } from "uuid";
 
 const EXTRA_ORDER_DATA = {

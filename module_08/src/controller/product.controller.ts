@@ -1,6 +1,6 @@
 import { Request, RequestHandler, Response } from "express";
-import { ErrorResponse, ProductResponse, ProductsResponse } from "./http.schema";
-import { productRepository } from "../repository/product.repository";
+import { ErrorResponse, ProductResponse, ProductsResponse } from "./http.schema.js";
+import { productRepository } from "../repository/product.repository.js";
 
 export const productController = {
   allProducts: (req: Request, res: Response<ProductsResponse>) => {

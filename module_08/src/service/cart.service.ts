@@ -1,7 +1,7 @@
-import { cartRepository } from "../repository/cart.repository";
-import { orderRepository } from "../repository/order.repository";
-import { productRepository } from "../repository/product.repository";
-import { Cart, CartItem, Order, Product } from "./entity.schema";
+import { cartRepository } from "../repository/cart.repository.js";
+import { orderRepository } from "../repository/order.repository.js";
+import { productRepository } from "../repository/product.repository.js";
+import { Cart, CartItem, Order, Product } from "./entity.schema.js";
 
 export enum CartServiceErrorResponses {
   CartNotFound = "cart_not_found",

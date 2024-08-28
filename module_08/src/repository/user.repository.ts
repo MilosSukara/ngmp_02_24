@@ -1,5 +1,5 @@
-import { User } from "../service/entity.schema";
-import { DB } from "./db";
+import { User } from "../service/entity.schema.js";
+import { DB } from "./db.js";
 
 export const userRepository = {
   all: (): User[] =>  DB.users,

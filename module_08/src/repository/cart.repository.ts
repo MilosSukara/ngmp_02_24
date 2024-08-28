@@ -1,5 +1,5 @@
-import { Cart, User } from "../service/entity.schema";
-import { DB } from "./db";
+import { Cart, User } from "../service/entity.schema.js";
+import { DB } from "./db.js";
 import { v4 as uuid } from "uuid";
 
 export const cartRepository = {

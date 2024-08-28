@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
-import { productRepository } from "../repository/product.repository";
+import { productRepository } from "../repository/product.repository.js";
 
 export const updateCartValidatior = (req: Request, res: Response, next: NextFunction) => {
   const validator = Joi.object({

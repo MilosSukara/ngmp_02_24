@@ -1,0 +1,48 @@
+
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    restart: always
+    volumes:
+      - ./src:/home/node/app/src/
+      - ./nodemon.json:/home/node/app/nodemon.json
+    container_name: app
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    command: npm run dev
+    networks:
+      - ngmp_network
+  node-gmp-db:
+    image: "postgres:12"
+    container_name: "node-gmp-db"
+    environment:
+      - POSTGRES_USER=node_gmp
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=node_gmp
+    restart: always
+    ports:
+      - '5432:5432'
+    networks:
+      - ngmp_network
+
+
+# volumes:
+  # nosql-data:
+  #   driver: local
+  #   name: mongo-data
+  # nosql-log:
+  #   driver: local
+  #   name: mongo-log
+
+networks:
+  ngmp_network:
+    driver: bridge
