@@ -1,6 +1,6 @@
-import { Cart, Order, Product } from "../service/entity.schema"
+import { CartEntity, OrderEntity, ProductEntity } from "./entity.schema"
 
-export type PublicCart = Pick<Cart, "id" | "items">
+export type PublicCart = Pick<CartEntity, "id" | "items">
 
 export interface CartResponse {
   data: {
@@ -12,18 +12,18 @@ export interface CartResponse {
 
 export interface CheckoutRespone {
   data: {
-    order: Order,
+    order: OrderEntity,
   },
   error: ErrorResponseBody | null
 }
 
 export interface ProductResponse {
-  data: Product | null,
+  data: ProductEntity | null,
   error: ErrorResponseBody | null
 }
 
 export interface ProductsResponse {
-  data: Product[] | null,
+  data: ProductEntity[] | null,
   error: ErrorResponseBody | null
 }
 

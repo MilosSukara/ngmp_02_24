@@ -1,27 +1,27 @@
-export interface Cart {
+export interface CartEntity {
   id: string,
   isDeleted: boolean,
   userId: string,
-  items: CartItem[],
+  items: CartItemEntity[],
 }
 
-export interface CartItem {
-  product: Product,
+export interface CartItemEntity {
+  product: ProductEntity,
   count: number,
 }
 
-export interface Product {
+export interface ProductEntity {
   id: string,
   title: string,
   description: string,
   price: number, 
 }
 
-export interface Order {
+export interface OrderEntity {
   id: string,
   userId: string,
   cartId: string,
-  items: CartItem[],
+  items: CartItemEntity[],
   payment: {
     type: string,
     address: string,
@@ -37,7 +37,7 @@ export interface Order {
 }
 
 
-export interface User {
+export interface UserEntity {
   id: string,
   name: string,
 }

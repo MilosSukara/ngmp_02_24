@@ -21,7 +21,6 @@ export const updateCartValidatior = (req: Request, res: Response, next: NextFunc
   }
   res.statusCode = 400;
   res.send({
-
     "data": null,
     "error": {
       "message": "Products are not valid"

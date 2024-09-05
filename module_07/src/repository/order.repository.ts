@@ -1,6 +1,5 @@
-import { Cart, Order } from "../service/entity.schema";
-import { DB } from "./db"
-import { v4 as uuid } from "uuid";
+import { OrderEntity } from "../schema/entity.schema";
+import { Order } from "../schema/db.schema";
 
 const EXTRA_ORDER_DATA = {
   "payment": {
@@ -17,20 +16,16 @@ const EXTRA_ORDER_DATA = {
 };
 
 export const orderRepository = {
-  all: (): Order[] => DB.orders,
-  get: (id: string): Order | null => DB.orders.find(pr => pr.id === id) ?? null,
-  create: (orderData: Omit<Order, "id" | "payment" | "delivery" | "comments" | "status">): Order => {
-    const order = {
-      id: uuid(),
+  all: async (): Promise<OrderEntity[]> => await Order.find(),
+  get: async (id: string): Promise<OrderEntity | null> => await Order.findById(id) ?? null,
+  create: async (orderData: Omit<OrderEntity, "id" | "payment" | "delivery" | "comments" | "status">): Promise<OrderEntity> => {
+    const order = new Order({
       userId: orderData.userId,
       cartId: orderData.cartId,
       items: orderData.items,
       ...EXTRA_ORDER_DATA,
       total: orderData.total
-    };
-
-
-    DB.orders.push(order);
-    return order;
+    });
+    return await order.save();
   }
 }

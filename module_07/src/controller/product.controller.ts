@@ -1,18 +1,18 @@
 import { Request, RequestHandler, Response } from "express";
-import { ErrorResponse, ProductResponse, ProductsResponse } from "./http.schema";
+import { ErrorResponse, ProductResponse, ProductsResponse } from "../schema/http.schema";
 import { productRepository } from "../repository/product.repository";
 
 export const productController = {
-  allProducts: (req: Request, res: Response<ProductsResponse>) => {
-    const products = productRepository.all();
+  allProducts: async (req: Request, res: Response<ProductsResponse>) => {
+    const products = await productRepository.all();
     let response: ProductsResponse = {
       data: products,
       error: null
     };
     res.send(response);
   },
-  getProduct: (req: Request<any, any, { productId: string }>, res: Response<ProductResponse | ErrorResponse>) => {
-    const product = productRepository.get(req.params.productId);
+  getProduct: async (req: Request<any, any, { productId: string }>, res: Response<ProductResponse | ErrorResponse>) => {
+    const product = await productRepository.get(req.params.productId);
     if (product === null) {
       res.statusCode = 404;
       res.send({
