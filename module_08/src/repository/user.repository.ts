@@ -1,7 +1,7 @@
+import { DI } from "../index.js";
 import { User } from "../service/entity.schema.js";
-import { DB } from "./db.js";
-
 export const userRepository = {
-  all: (): User[] =>  DB.users,
-  get: (id: string): User | null => DB.users.find(pr => pr.id === id) ?? null,
+  all: async (): Promise<User[]> => await DI.users.findAll() as User[],
+  get: async (id: string): Promise<User | null> => await DI.users.findOne(id) as User | null,
+  findByName: async (name: string): Promise<User | null> => await DI.users.findOne({ name: name }) as User | null
 }
