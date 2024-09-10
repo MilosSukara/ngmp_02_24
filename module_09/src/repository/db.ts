@@ -9,7 +9,7 @@ export const DB = {
       price: 200
     },
     {
-      id: "5c293ad0-19d0-41ee-baa3-4c648f9f76912",
+      id: "5c293ad0-19d0-41ee-baa3-4c648f9f7612",
       title: "Pen",
       description: "Cute pen",
       price: 30
@@ -58,7 +58,7 @@ export const DB = {
         },
         {
           product: {
-            id: "5c293ad0-19d0-41ee-baa3-4c648f9f76912",
+            id: "5c293ad0-19d0-41ee-baa3-4c648f9f7612",
             title: "Pen",
             description: "Cute pen",
             price: 30

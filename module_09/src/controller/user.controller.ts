@@ -21,13 +21,12 @@ export const userController = {
     const user = userRepository.findByEmail(req.body.email);
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
       const token = jwt.sign(
-        { user_id: user.id, email: user.email, role: user.role },
+        { id: user.id, email: user.email, role: user.role },
         process.env.TOKEN_KEY!,
         {
           expiresIn: "2h",
         }
       );
-
       return res.send({
         data: {
           token

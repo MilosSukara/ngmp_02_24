@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "cafa61d6-e9dd-49cb-bbd1-b4a5ba6da091",
-		"name": "NGMP Express module",
+		"_postman_id": "07bd4f33-851a-4b1a-bfd5-466d521e4c39",
+		"name": "NGMP Authentication and Authorization module",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32591284"
 	},
@@ -12,8 +12,8 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-user-id",
-						"value": "admin",
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
 						"type": "text"
 					}
 				],
@@ -36,8 +36,8 @@
 				"method": "PUT",
 				"header": [
 					{
-						"key": "x-user-id",
-						"value": "admin",
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
 						"type": "text"
 					},
 					{
@@ -48,7 +48,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"productId\": \"5c293ad0-19d0-41ee-baa3-4c648f9f7697\",\n    \"count\": 0\n}",
+					"raw": "{\n    \"productId\": \"5c293ad0-19d0-41ee-baa3-4c648f9f7612\",\n    \"count\": 3\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -74,14 +74,15 @@
 				"method": "DELETE",
 				"header": [
 					{
-						"key": "x-user-id",
-						"value": "admin",
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
 						"type": "text"
 					},
 					{
 						"key": "",
 						"value": "no-cart",
-						"type": "text"
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"url": {
@@ -103,15 +104,9 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "x-user-id",
-						"value": "admin",
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
 						"type": "text"
-					},
-					{
-						"key": "x-user-id",
-						"value": "no-cart",
-						"type": "text",
-						"disabled": true
 					}
 				],
 				"url": {
@@ -133,8 +128,8 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-user-id",
-						"value": "admin",
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
 						"type": "text"
 					}
 				],
@@ -156,19 +151,92 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-user-id",
-						"value": "admin",
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/products/5c293ad0-19d0-41ee-baa3-4c648f9f76912",
+					"raw": "{{url}}/products/5c293ad0-19d0-41ee-baa3-4c648f9f7612",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"products",
-						"5c293ad0-19d0-41ee-baa3-4c648f9f76912"
+						"5c293ad0-19d0-41ee-baa3-4c648f9f7612"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"ann.jones@epam.com\",\n  \"password\": \"DDQldls?kdpw0fk\",\n  \"role\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/register",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();",
+							"pm.environment.set('token', res.data.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"ann.jones@epam.com\",\n  \"password\": \"DDQldls?kdpw0fk\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"login"
 					]
 				}
 			},
