@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "cafa61d6-e9dd-49cb-bbd1-b4a5ba6da091",
+		"name": "NGMP Express module",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32591284"
+	},
+	"item": [
+		{
+			"name": "Cart",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-user-id",
+						"value": "admin",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/profile/cart",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"profile",
+						"cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-user-id",
+						"value": "admin",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": \"5c293ad0-19d0-41ee-baa3-4c648f9f7697\",\n    \"count\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/profile/cart",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"profile",
+						"cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-user-id",
+						"value": "admin",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "no-cart",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/profile/cart",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"profile",
+						"cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart Checkout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-user-id",
+						"value": "admin",
+						"type": "text"
+					},
+					{
+						"key": "x-user-id",
+						"value": "no-cart",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/profile/cart",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"profile",
+						"cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Products",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-user-id",
+						"value": "admin",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/products",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-user-id",
+						"value": "admin",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/products/5c293ad0-19d0-41ee-baa3-4c648f9f76912",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"products",
+						"5c293ad0-19d0-41ee-baa3-4c648f9f76912"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
