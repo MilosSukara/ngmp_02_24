@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { userRepository } from "../repository/user.repository";
 import { ErrorResponse } from "./http.schema";
+import { logger } from "../logger";
 
 export const userAuthorizationMiddleware = (req: Request<any, any, { "x-user-id": string }>, res: Response<ErrorResponse>, next: NextFunction) => {
   const id = req.get('x-user-id') ?? '';
@@ -42,7 +43,7 @@ export const setJSONResponseHeader = (req: Request, res: Response, next: NextFun
 }
 
 export const errorHandler = (err: Error, req: Request, res: Response<ErrorResponse>, next: NextFunction) => {
-  console.log(err);
+  logger.error("Internal Server Error", err);
   res.status(500);
   res.send({ data: null, error: { message: "Internal Server error" } });
 };
