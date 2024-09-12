@@ -1,7 +1,14 @@
 # Module 10
 ## Commands
+
+### Setup
+Add a `.env` file to the root of the directory. You can look at `.env.example` for the list of used variables
+
 ### Start
-> `npm start`
+#### Dev
+> `npm run start_dev`
+#### Prod
+> `npm run start_prod`
 ### Stop
 > `npm stop`
 
