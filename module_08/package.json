@@ -1,11 +1,18 @@
 {
-  "name": "module_07",
+  "name": "module_08",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "./dist/index.js",
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/config/mikro-orm.config.ts",
+      "./dist/config/mikro-orm.config.js"
+    ]
+  },
   "scripts": {
-    "start": "./node_modules/.bin/pm2 start ecosystem.config.js",
-    "stop": "./node_modules/.bin/pm2 stop ecosystem.config.js",
-    "delete": "./node_modules/.bin/pm2 delete all" 
+    "start": "tsc && node ./dist/indes.js",
+    "dev": "tsc-watch --onSuccess 'node ./dist/index.js'"
   },
   "repository": {
     "type": "git",
@@ -19,15 +26,25 @@
   "homepage": "https://github.com/MilosSukara/ngmp_02_24#readme",
   "description": "",
   "dependencies": {
+    "@mikro-orm/core": "^6.3.7",
+    "@mikro-orm/migrations": "^6.3.7",
+    "@mikro-orm/postgresql": "^6.3.7",
+    "@mikro-orm/reflection": "^6.3.7",
+    "@mikro-orm/seeder": "^6.3.7",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "joi": "^17.13.3",
+    "pg": "^8.12.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@mikro-orm/cli": "^6.3.7",
     "@types/express": "^4.17.21",
     "@types/uuid": "^10.0.0",
+    "nodemon": "^3.1.4",
     "pm2": "^5.4.2",
     "ts-node": "^10.9.2",
+    "tsc-watch": "^6.2.0",
     "typescript": "^5.5.3"
   }
 }

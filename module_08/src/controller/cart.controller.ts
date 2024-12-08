@@ -1,7 +1,6 @@
 import { Request, RequestHandler, Response } from "express";
-import { cartService, CartServiceErrorResponses } from "../service/cart.service";
-import { CartResponse, EmptySuccessResponse, ErrorResponse, PublicCart } from "./http.schema";
-import { Cart } from "../service/entity.schema";
+import { cartService, CartServiceErrorResponses } from "../service/cart.service.js";
+import { CartResponse, EmptySuccessResponse, ErrorResponse, PublicCart } from "./http.schema.js";
 
 
 export const getPublicCart = ({ id, items }: PublicCart) => ({ id, items });
@@ -9,9 +8,9 @@ export const getPublicCart = ({ id, items }: PublicCart) => ({ id, items });
 
 export const cartController = {
 
-  getCart: (req: Request, res: Response<CartResponse>) => {
+  getCart: async (req: Request, res: Response<CartResponse>) => {
     const userId = req.get('x-user-id') ?? '';
-    const cart = cartService.getCart(userId);
+    const cart = await cartService.getCart(userId);
     res.send({
       data: {
         cart: getPublicCart(cart),
@@ -22,9 +21,9 @@ export const cartController = {
     res.end();
   },
 
-  updateCart: (req: Request<any, any, { productId: string, count: number }>, res: Response<CartResponse | ErrorResponse>) => {
+  updateCart: async (req: Request<any, any, { productId: string, count: number }>, res: Response<CartResponse | ErrorResponse>) => {
     const userId = req.get('x-user-id') ?? '';
-    const { cart, error } = cartService.updateCart(userId, { productId: req.body.productId, count: req.body.count });
+    const { cart, error } = await cartService.updateCart(userId, { productId: req.body.productId, count: req.body.count });
     if (error != null) {
       switch (error) {
         case CartServiceErrorResponses.CartNotFound: {
@@ -90,9 +89,9 @@ export const cartController = {
     res.end();
   },
 
-  checkoutCart: (req: Request, res: Response) => {
+  checkoutCart: async (req: Request, res: Response) => {
     const userId = req.get('x-user-id') ?? '';
-    const { order, error } = cartService.checkout(userId);
+    const { order, error } = await cartService.checkout(userId);
     if (error != null) {
       switch (error) {
         case CartServiceErrorResponses.CartNotFound: {

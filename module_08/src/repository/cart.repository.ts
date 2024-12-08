@@ -1,28 +1,29 @@
-import { Cart, User } from "../service/entity.schema";
-import { DB } from "./db";
-import { v4 as uuid } from "uuid";
+import { Cart } from "../entities/cart.entity.js";
+import { User as UserEntity } from "../entities/user.entity.js";
+import { DI } from "../index.js";
+import { CartItem,  } from "../service/entity.schema.js";
+import { userRepository } from "./user.repository.js";
 
 export const cartRepository = {
-  all: (): Cart[] => DB.carts,
-  get: (id: string): Cart | null => DB.carts.find(pr => pr.id === id) ?? null,
-  getByUserId: (id: string): Cart | null => DB.carts.find(cart => cart.userId === id && !cart.isDeleted) ?? null,
-  create: (userId: string): Cart => {
-    const cart = {
-      id: uuid(),
-      isDeleted: false,
-      userId: userId,
-      items: [],
+  all: async (): Promise<Cart[]> => await DI.carts.findAll(),
+  get: async (id: string): Promise<Cart | null> => await DI.carts.findOne(id),
+  getByUserId: async (id: string): Promise<Cart | null> => await DI.carts.findOne({ user: { id }, isDeleted: false }),
+  create: async (userId: string): Promise<Cart> => {
+    const user = await userRepository.get(userId);
+    if (user == null) {
+      throw new Error("Invalid user id");
     }
-    DB.carts.push(cart);
+    const cart = new Cart(user as UserEntity);
+    await DI.em.persist(cart).flush();
     return cart;
   },
-  update(id: string, cart: Cart): Cart | null {
-    DB.carts = DB.carts.map((c) => {
-      if (c.id === id) {
-        return cart;
-      }
-      return c;
-    });
-    return this.get(id);
+  async updateItems(id: string, items: CartItem[]): Promise<Cart | null> {
+    let cart = await DI.carts.findOne(id);
+    if(cart == null) {
+      return null;
+    }
+    cart.items = items;
+    await DI.em.persist(cart).flush();
+    return cart;
   },
 }

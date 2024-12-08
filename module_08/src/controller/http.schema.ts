@@ -1,4 +1,4 @@
-import { Cart, Order, Product } from "../service/entity.schema"
+import { Cart, Order, Product } from "../service/entity.schema.js"
 
 export type PublicCart = Pick<Cart, "id" | "items">
 

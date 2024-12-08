@@ -1,0 +1,42 @@
+
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    restart: always
+    volumes:
+      - ./src:/home/node/app/src/
+      - ./nodemon.json:/home/node/app/nodemon.json
+    container_name: app
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    env_file:
+      - .container.env
+    command: npm run dev
+    networks:
+      - ngmp_network
+  node-gmp-db:
+    image: "postgres:12"
+    container_name: "node-gmp-db"
+    environment:
+      - POSTGRES_USER=${MIKRO_ORM_USER}
+      - POSTGRES_PASSWORD=${MIKRO_ORM_PASSWORD}
+      - POSTGRES_DB=${MIKRO_ORM_DB_NAME}
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - ngmp_network
+
+
+networks:
+  ngmp_network:
+    driver: bridge
